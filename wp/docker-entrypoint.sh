@@ -226,9 +226,12 @@ EOPHP
         chown "$user:$group" wp-config.php
     fi
     chmod g+rwx -R /var/www/html/wp-content
+
+    su -m wpuser -c "wp core install --path=/var/www/html --url=$WP_URL --title=$WP_TITLE --admin_user=$WP_ADMIN_USER --admin_email=$WP_ADMIN_EMAIL --admin_password=$WP_ADMIN_PASSWORD"
     while read p; do
       su -m wpuser -c "wp plugin install $p --path=/var/www/html --activate"
     done </var/wp-config/plugins.txt
+    su -m wpuser -c "wp rewrite structure '%postname%/' --path=/var/www/html"
 
 	for e in "${envs[@]}"; do
 		unset "$e"
